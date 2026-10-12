@@ -1,0 +1,20 @@
+---
+title: Scenes, not pages
+date: 2026-09-12
+summary: Notes on building this site as a sequence of pinned scenes with Astro, GSAP and Lenis, without hurting performance.
+tags: [Astro, Motion]
+---
+
+{/* ponytail: placeholder post */}
+
+This site is told as a sequence of scenes. Each project gets one pinned section, driven by scroll.
+
+## Three rules
+
+1. Animate only `transform` and `opacity`.
+2. One protagonist animation per scene.
+3. Scrub follows the scroll, never the clock.
+
+## When to stop
+
+On small screens and with reduced motion, the scenes become plain stacked sections. The content works without any JavaScript at all.

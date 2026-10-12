@@ -1,0 +1,92 @@
+---
+const items = [
+  { id: 'work', label: 'Work', href: '/#work', match: '/projects' },
+  { id: 'journal', label: 'Journal', href: '/#journal', match: '/journal' },
+  { id: 'about', label: 'About', href: '/#about', match: '/about' },
+  { id: 'contact', label: 'Contact', href: '/#contact', match: null },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="nav">
+  <nav class="wrap flex items-center justify-between gap-6" aria-label="Main">
+    <a href="/" class="font-display text-lg font-semibold tracking-tight">FV<span class="text-accent">.</span></a>
+    <ul class="flex gap-1 text-sm sm:gap-2">
+      {
+        items.map((i) => (
+          <li>
+            <a
+              href={i.href}
+              data-nav={i.id}
+              aria-current={i.match && path.startsWith(i.match) ? 'page' : undefined}
+            >
+              {i.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    padding-block: 1rem;
+    background: linear-gradient(to bottom, var(--color-canvas) 30%, transparent);
+  }
+  a[data-nav] {
+    position: relative;
+    display: inline-block;
+    padding: 0.4em 0.75em;
+    border-radius: 999px;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    transition: color var(--d-base) var(--ease-out);
+  }
+  a[data-nav]:hover,
+  a[data-nav][aria-current] {
+    color: var(--color-ink);
+  }
+  a[data-nav]::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0.1em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    transform: translateX(-50%) scale(0);
+    transition: transform var(--d-base) var(--ease-out);
+  }
+  a[data-nav][aria-current]::after {
+    transform: translateX(-50%) scale(1);
+  }
+</style>
+
+<script>
+  // Active section indicator on the home page (RF-07).
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('a[data-nav]')].map((a) => [a.dataset.nav!, a]),
+  );
+  const sections = [...links.keys()]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => !!el);
+  if (sections.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a, id) => a.toggleAttribute('aria-current', id === e.target.id));
+          links.get(e.target.id)?.setAttribute('aria-current', 'true');
+        }
+      },
+      // A section is "active" when it crosses the middle of the viewport.
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>

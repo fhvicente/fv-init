@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Prose from '../../layouts/Prose.astro';
+import Figure from '../../components/mdx/Figure.astro';
+import Callout from '../../components/mdx/Callout.astro';
+import Video from '../../components/mdx/Video.astro';
+import { getProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  return (await getProjects()).map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, summary, stack, cover, coverAlt, links, date } = project.data;
+---
+
+<Prose
+  title={title}
+  description={summary}
+  eyebrow={`Case study · ${date.getFullYear()}`}
+  meta={stack.join(' · ')}
+  image={`/og/projects/${project.id}.png`}
+  type="article"
+>
+  <Fragment slot="before">
+    <div class="mt-8 flex flex-wrap gap-3">
+      {links.live && <a href={links.live} class="btn btn-accent">Visit live</a>}
+      {links.repo && <a href={links.repo} class="btn">Source code</a>}
+    </div>
+    <Image
+      src={cover}
+      alt={coverAlt}
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 1312px) 1180px, 100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="mt-12 w-full rounded-[var(--radius-lg)] shadow-e3"
+    />
+  </Fragment>
+  <Content components={{ Figure, Callout, Video }} />
+  <a slot="after" href="/#work" class="link mt-16 inline-block">← All work</a>
+</Prose>

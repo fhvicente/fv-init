@@ -1,17 +1,95 @@
 ---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/scenes/Hero.astro';
+import Threshold from '../components/scenes/Threshold.astro';
+import Scene from '../components/scenes/Scene.astro';
+import Close from '../components/scenes/Close.astro';
+import { getPosts, getProjects, formatDate } from '../lib/content';
+import { SITE } from '../site';
 
+const featured = (await getProjects()).filter((p) => p.data.featured);
+const posts = (await getPosts()).slice(0, 3);
+const skills = ['TypeScript', 'Node.js', 'React', 'Astro', 'Python', 'PostgreSQL', 'LLM apps', 'RAG & evals', 'Cloud & CI'];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+  <Hero />
+  <Threshold projects={featured} />
+  {featured.map((project, index) => <Scene project={project} index={index} />)}
+
+  <section id="journal" class="section" aria-labelledby="journal-title">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow" data-reveal>Journal</p>
+          <h2 id="journal-title" class="mt-4 text-3xl" data-reveal>Notes from the work</h2>
+        </div>
+        <a href="/journal/" class="link" data-reveal>All posts</a>
+      </div>
+      <ul class="mt-12 grid gap-4 md:grid-cols-3">
+        {
+          posts.map((post) => (
+            <li data-reveal>
+              <a href={`/journal/${post.id}/`} class="card">
+                <time class="text-xs text-ink-soft" datetime={post.data.date.toISOString()}>
+                  {formatDate(post.data.date)}
+                </time>
+                <h3 class="mt-3 text-xl">{post.data.title}</h3>
+                <p class="mt-3 text-sm text-ink-soft">{post.data.summary}</p>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="about" class="section" aria-labelledby="about-title">
+    <div class="wrap grid gap-10 md:grid-cols-[5fr_7fr]">
+      <div>
+        <p class="eyebrow" data-reveal>About</p>
+        <h2 id="about-title" class="mt-4 text-3xl" data-reveal>Hi, I'm Flávio.</h2>
+      </div>
+      <div data-reveal>
+        <p class="text-lg text-ink-soft">
+          I'm a fullstack engineer who moved deep into AI engineering. I design and ship products end to end:
+          data models, APIs, interfaces and the LLM pieces that make them useful, with evals so they stay that
+          way.
+        </p>
+        <ul class="mt-8 flex flex-wrap gap-2" aria-label="Skills">
+          {skills.map((s) => <li class="chip">{s}</li>)}
+        </ul>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/about/" class="btn">More about me</a>
+          <a href={SITE.cv} class="btn" download>Download CV (PDF)</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Close />
+</Base>
+
+<style>
+  .card {
+    display: block;
+    height: 100%;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-hairline);
+    background: var(--color-surface);
+    text-decoration: none;
+    transition:
+      transform var(--d-base) var(--ease-out),
+      border-color var(--d-base) var(--ease-out);
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-accent) 50%, transparent);
+  }
+</style>
+
+<script>
+  import { initMotion } from '../lib/motion';
+  initMotion();
+</script>

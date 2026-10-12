@@ -1,0 +1,18 @@
+---
+import { SITE } from '../../site';
+---
+
+<section id="contact" class="section" aria-labelledby="contact-title">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal>Contact</p>
+    <h2 id="contact-title" class="mt-4 max-w-[14ch] text-4xl" data-reveal>
+      Let's build the next one<span class="text-accent">.</span>
+    </h2>
+    <div class="mt-10 flex flex-wrap gap-3" data-reveal>
+      <a href={`mailto:${SITE.email}`} class="btn btn-accent">{SITE.email}</a>
+      <a href={SITE.links.linkedin} class="btn">LinkedIn</a>
+      <a href={SITE.links.github} class="btn">GitHub</a>
+      <a href={SITE.cv} class="btn" download>Download CV (PDF)</a>
+    </div>
+  </div>
+</section>

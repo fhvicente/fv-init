@@ -1,0 +1,71 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+const { project, index } = Astro.props;
+const { title, summary, stack, cover, coverAlt, links } = project.data;
+const headingId = `scene-${project.id}-title`;
+---
+
+<section id={`scene-${project.id}`} class="scene" data-scene aria-labelledby={headingId}>
+  <div class="wrap scene-grid">
+    <div class="scene-copy" data-scene-copy>
+      <p class="eyebrow">Project {String(index + 1).padStart(2, '0')}</p>
+      <h3 id={headingId} class="mt-4 text-3xl">{title}</h3>
+      <p class="mt-5 max-w-[42ch] text-lg text-ink-soft">{summary}</p>
+      <ul class="mt-6 flex flex-wrap gap-2" aria-label="Stack">
+        {stack.map((s) => <li class="chip">{s}</li>)}
+      </ul>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={`/projects/${project.id}/`} class="btn btn-accent">Case study<span class="sr-only">: {title}</span></a>
+        {links.live && <a href={links.live} class="btn">Live</a>}
+        {links.repo && <a href={links.repo} class="btn">Code</a>}
+      </div>
+    </div>
+    <div class="scene-visual" data-scene-visual>
+      <Image src={cover} alt={coverAlt} widths={[480, 800, 1200]} sizes="(min-width: 861px) 50vw, 100vw" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .scene {
+    padding-block: var(--section);
+  }
+  .scene-grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .scene-visual {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-e3);
+    will-change: transform;
+  }
+  .scene-visual :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* Full mode: one screen per scene, side by side. Matches FULL in lib/motion.ts. */
+  @media (min-width: 861px) and (min-height: 601px) {
+    .scene {
+      display: grid;
+      align-items: center;
+      min-height: 100svh;
+      padding-block: 6rem 3rem;
+    }
+    .scene-grid {
+      grid-template-columns: 5fr 7fr;
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+    }
+    .scene:nth-of-type(even) .scene-copy {
+      order: 2;
+    }
+  }
+</style>

@@ -1,0 +1,25 @@
+---
+interface Props {
+  src: string;
+  poster: string;
+  caption?: string;
+  /** Accessible description; the video is decorative when omitted. */
+  label?: string;
+}
+const { src, poster, caption, label } = Astro.props;
+---
+
+<figure class="my-10">
+  <video
+    src={src}
+    poster={poster}
+    controls
+    muted
+    loop
+    playsinline
+    preload="none"
+    class="w-full rounded-[var(--radius-md)]"
+    aria-label={label}
+  ></video>
+  {caption && <figcaption class="mt-3 text-sm text-ink-soft">{caption}</figcaption>}
+</figure>

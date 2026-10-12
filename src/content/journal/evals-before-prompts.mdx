@@ -1,0 +1,23 @@
+---
+title: Write the evals before the prompt
+date: 2026-08-20
+summary: Why I start every LLM feature with a test set, and how small that set can be.
+tags: [AI engineering, Testing]
+---
+
+{/* ponytail: placeholder post */}
+
+Every LLM feature I ship starts the same way: twenty real inputs and what a good answer looks like.
+
+<Callout title="Rule of thumb">If you can't say what good looks like, the model can't either.</Callout>
+
+## Start small
+
+Twenty cases catch most regressions. Grow the set when a bug escapes it.
+
+```ts
+for (const c of cases) {
+    const out = await run(c.input);
+    assert(judge(out, c.expected), c.name);
+}
+```

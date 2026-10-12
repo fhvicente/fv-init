@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Prose from '../../layouts/Prose.astro';
+import Figure from '../../components/mdx/Figure.astro';
+import Callout from '../../components/mdx/Callout.astro';
+import Video from '../../components/mdx/Video.astro';
+import { getPosts, formatDate } from '../../lib/content';
+
+export async function getStaticPaths() {
+  return (await getPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, summary, date, tags, cover, coverAlt } = post.data;
+---
+
+<Prose
+  title={title}
+  description={summary}
+  eyebrow="Journal"
+  meta={[formatDate(date), ...tags].join(' · ')}
+  image={`/og/journal/${post.id}.png`}
+  type="article"
+>
+  {
+    cover && (
+      <Image
+        slot="before"
+        src={cover}
+        alt={coverAlt ?? ''}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 1312px) 1180px, 100vw"
+        loading="eager"
+        class="mt-12 w-full rounded-[var(--radius-lg)]"
+      />
+    )
+  }
+  <Content components={{ Figure, Callout, Video }} />
+  <a slot="after" href="/journal/" class="link mt-16 inline-block">← All posts</a>
+</Prose>

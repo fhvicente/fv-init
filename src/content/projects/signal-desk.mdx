@@ -1,0 +1,32 @@
+---
+title: Signal Desk
+date: 2026-06-01
+summary: An AI triage desk that reads every support ticket, routes it, and drafts a first answer grounded in the docs.
+stack: [TypeScript, Node.js, PostgreSQL, pgvector, Claude API]
+cover: ../../assets/projects/signal-desk.svg
+coverAlt: Amber contour lines radiating from a bright centre point.
+links:
+    repo: https://github.com/fhvicente
+featured: true
+order: 1
+---
+
+{/* ponytail: placeholder case study, replace with the real project */}
+
+## The problem
+
+Support queues grow faster than teams. Most tickets repeat questions the docs already answer.
+
+## What I built
+
+A pipeline that classifies each ticket, retrieves the relevant docs with pgvector, and drafts a reply an agent can approve in one click.
+
+<Callout title="Result">Median first response dropped from hours to minutes.</Callout>
+
+```ts
+const draft = await answer({ ticket, context: await retrieve(ticket.body, { k: 6 }) });
+```
+
+## What I learned
+
+Evals came first. Every prompt change ran against a fixed set of real tickets before it shipped.
