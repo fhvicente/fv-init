@@ -5,7 +5,7 @@ import { SITE } from "../../site";
 
 // OG images rendered at build time from an SVG template (RF-12).
 export const getStaticPaths = (async () => [
-    { params: { slug: "default" }, props: { title: SITE.name, kicker: "Fullstack & AI Engineer" } },
+    { params: { slug: "default" }, props: { title: SITE.brand, kicker: SITE.role } },
     ...(await getProjects()).map((p) => ({
         params: { slug: `projects/${p.id}` },
         props: { title: p.data.title, kicker: "Case study" },
@@ -33,16 +33,16 @@ export const GET: APIRoute = async ({ props }) => {
     const { title, kicker } = props as { title: string; kicker: string };
     const lines = wrap(title);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
-  <defs><radialGradient id="g" cx="0.85" cy="0.2" r="0.9"><stop offset="0" stop-color="#3a2c10"/><stop offset="1" stop-color="#0b100d"/></radialGradient></defs>
+  <defs><radialGradient id="g" cx="0.85" cy="0.2" r="0.9"><stop offset="0" stop-color="#24351a"/><stop offset="1" stop-color="#0a0a0a"/></radialGradient></defs>
   <rect width="1200" height="630" fill="url(#g)"/>
-  <text x="80" y="110" font-family="sans-serif" font-size="28" letter-spacing="4" fill="#a9b3a5">${esc(kicker.toUpperCase())}</text>
+  <text x="80" y="110" font-family="sans-serif" font-size="28" letter-spacing="4" fill="#8b8b84">${esc(kicker.toUpperCase())}</text>
   ${lines
       .map(
           (l, i) =>
-              `<text x="80" y="${250 + i * 96}" font-family="sans-serif" font-weight="700" font-size="88" letter-spacing="-3" fill="#ede8dc">${esc(l)}</text>`,
+              `<text x="80" y="${250 + i * 96}" font-family="sans-serif" font-weight="700" font-size="88" letter-spacing="-3" fill="#f4f4f0">${esc(l)}</text>`,
       )
       .join("")}
-  <text x="80" y="560" font-family="sans-serif" font-size="30" fill="#e8b24a">${esc(SITE.name)}</text>
+  <text x="80" y="560" font-family="sans-serif" font-size="30" fill="#b8f36b">${esc(SITE.name)}</text>
 </svg>`;
     const png = await sharp(Buffer.from(svg)).png().toBuffer();
     return new Response(new Uint8Array(png), { headers: { "Content-Type": "image/png" } });

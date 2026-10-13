@@ -1,0 +1,37 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getPosts, formatDate } from "../../lib/content";
+
+// Rest param as /journal/ so the page only exists once there are posts.
+export async function getStaticPaths() {
+    const posts = await getPosts();
+    return posts.length ? [{ params: { index: undefined }, props: { posts } }] : [];
+}
+
+const { posts } = Astro.props;
+---
+
+<Base title="Journal" description="Notes on building software, fullstack and AI engineering.">
+    <section class="wrap pt-36 pb-[var(--section)]">
+        <p class="eyebrow">Journal</p>
+        <h1 class="mt-4 text-4xl">Notes from the work</h1>
+        <ul class="mt-16 border-t border-hairline">
+            {posts.map((post) => (
+                <li class="border-b border-hairline">
+                    <a
+                        href={`/journal/${post.id}/`}
+                        class="group grid gap-2 py-8 no-underline md:grid-cols-[10rem_1fr]"
+                    >
+                        <time class="text-sm text-ink-soft" datetime={post.data.date.toISOString()}>
+                            {formatDate(post.data.date)}
+                        </time>
+                        <div>
+                            <h2 class="text-2xl transition-colors group-hover:text-accent">{post.data.title}</h2>
+                            <p class="mt-2 max-w-[65ch] text-ink-soft">{post.data.summary}</p>
+                        </div>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </section>
+</Base>

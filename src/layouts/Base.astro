@@ -1,100 +1,128 @@
 ---
-import '../styles/global.css';
-import bricolageLatin from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
-import Nav from '../components/ui/Nav.astro';
-import Grain from '../components/ui/Grain.astro';
-import { SITE } from '../site';
+import "../styles/global.css";
+import bricolageLatin from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
+import Nav from "../components/ui/Nav.astro";
+import Grain from "../components/ui/Grain.astro";
+import { SITE } from "../site";
+import { getPosts } from "../lib/content";
 
 interface Props {
-  title?: string;
-  description?: string;
-  /** Path of the OG image, e.g. /og/projects/foo.png */
-  image?: string;
-  type?: 'website' | 'article';
+    title?: string;
+    description?: string;
+    /** Path of the OG image, e.g. /og/projects/foo.png */
+    image?: string;
+    type?: "website" | "article";
 }
 
-const { title, description = SITE.description, image = '/og/default.png', type = 'website' } =
-  Astro.props;
-const fullTitle = title ? `${title} — ${SITE.name}` : SITE.title;
+const { title, description = SITE.description, image = "/og/default.png", type = "website" } = Astro.props;
+const fullTitle = title ? `${title} — ${SITE.brand}` : `${SITE.brand} — ${SITE.name}`;
+const hasPosts = (await getPosts()).length > 0;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: SITE.name,
-    url: Astro.site?.href,
-    jobTitle: 'Fullstack & AI Engineer',
-    sameAs: Object.values(SITE.links),
-  },
-  { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: Astro.site?.href },
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: SITE.name,
+        url: Astro.site?.href,
+        jobTitle: SITE.role,
+        sameAs: Object.values(SITE.links),
+    },
+    { "@context": "https://schema.org", "@type": "WebSite", name: SITE.brand, url: Astro.site?.href },
 ];
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} — Journal`} href="/rss.xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
-    <meta name="theme-color" content="#0b100d" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{fullTitle}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        {hasPosts && (
+            <link rel="alternate" type="application/rss+xml" title={`${SITE.brand} — Journal`} href="/rss.xml" />
+        )}
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        <link rel="preload" href={bricolageLatin} as="font" type="font/woff2" crossorigin />
+        <meta name="theme-color" content="#0a0a0a" />
 
-    <meta property="og:type" content={type} />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    <slot name="head" />
-  </head>
-  <body class="min-h-svh bg-canvas text-ink">
-    <a href="#main" class="skip-link">Skip to content</a>
-    <Nav />
-    <main id="main">
-      <slot />
-    </main>
-    <footer class="wrap border-t border-hairline py-10 text-sm text-ink-soft">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <p>© {new Date().getFullYear()} {SITE.name}</p>
-        <ul class="flex flex-wrap gap-5" aria-label="Elsewhere">
-          <li><a class="hover:text-accent" href={SITE.links.github}>GitHub</a></li>
-          <li><a class="hover:text-accent" href={SITE.links.linkedin}>LinkedIn</a></li>
-          <li><a class="hover:text-accent" href={`mailto:${SITE.email}`}>Email</a></li>
-          <li><a class="hover:text-accent" href="/rss.xml">RSS</a></li>
-        </ul>
-      </div>
-    </footer>
-    <Grain />
-  </body>
+        <meta property="og:type" content={type} />
+        <meta property="og:title" content={fullTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={fullTitle} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+        <slot name="head" />
+    </head>
+    <body class="min-h-svh bg-canvas text-ink">
+        <a href="#main" class="skip-link">
+            Skip to content
+        </a>
+        <Nav />
+        <main id="main">
+            <slot />
+        </main>
+        <footer class="wrap border-t border-hairline py-10 text-sm text-ink-soft">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <p>
+                    <span class="font-display font-semibold text-ink">
+                        FV<span class="text-accent">.</span>
+                    </span>{" "}
+                    © {new Date().getFullYear()} {SITE.name} · {SITE.location}
+                </p>
+                <ul class="flex flex-wrap gap-5" aria-label="Elsewhere">
+                    <li>
+                        <a class="hover:text-accent" href={SITE.links.github}>
+                            GitHub
+                        </a>
+                    </li>
+                    <li>
+                        <a class="hover:text-accent" href={SITE.links.linkedin}>
+                            LinkedIn
+                        </a>
+                    </li>
+                    <li>
+                        <a class="hover:text-accent" href={`mailto:${SITE.email}`}>
+                            Email
+                        </a>
+                    </li>
+                    {hasPosts && (
+                        <li>
+                            <a class="hover:text-accent" href="/rss.xml">
+                                RSS
+                            </a>
+                        </li>
+                    )}
+                </ul>
+            </div>
+        </footer>
+        <Grain />
+    </body>
 </html>
 
 <style>
-  .skip-link {
-    position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 100;
-    padding: 0.6em 1em;
-    border-radius: var(--radius-sm);
-    background: var(--color-accent);
-    color: var(--color-canvas);
-    transform: translateY(-200%);
-    transition: transform var(--d-base) var(--ease-out);
-  }
-  .skip-link:focus {
-    transform: none;
-  }
+    .skip-link {
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: 100;
+        padding: 0.6em 1em;
+        border-radius: var(--radius-sm);
+        background: var(--color-accent);
+        color: var(--color-canvas);
+        transform: translateY(-200%);
+        transition: transform var(--d-base) var(--ease-out);
+    }
+    .skip-link:focus {
+        transform: none;
+    }
 </style>

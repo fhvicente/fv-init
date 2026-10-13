@@ -1,0 +1,28 @@
+---
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getProjects } from "../../lib/content";
+
+const projects = await getProjects("product");
+---
+
+<Base title="Projects" description="Projects and products built by Flávio Vicente .">
+    <section class="wrap pt-36 pb-[var(--section)]">
+        <p class="cmd">fv projects</p>
+        <h1 class="mt-4 text-4xl">Projects</h1>
+        <p class="mt-6 max-w-[48ch] text-lg text-ink-soft">
+            Products and tools, from the database to the interface. Smaller experiments live in the{" "}
+            <a href="/lab/" class="link">
+                lab
+            </a>
+            .
+        </p>
+        <ul class="mt-16 grid gap-4 md:grid-cols-2">
+            {projects.map((project) => (
+                <li>
+                    <ProjectCard project={project} />
+                </li>
+            ))}
+        </ul>
+    </section>
+</Base>

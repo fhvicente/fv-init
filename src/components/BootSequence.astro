@@ -1,0 +1,94 @@
+---
+// `fv init` intro (PRD §5). Hidden unless the inline script below opts in, so without JS
+// (or with reduced motion, or on a repeat visit this session) the page renders as normal.
+const steps = ["identity loaded", "projects synced", "lab initialised", "stack detected"];
+---
+
+<script is:inline>
+    try {
+        if (!sessionStorage.getItem("fv-booted") && !matchMedia("(prefers-reduced-motion: reduce)").matches)
+            document.documentElement.classList.add("boot");
+    } catch {}
+</script>
+
+<div class="boot" data-boot>
+    <div class="boot-screen">
+        <p>
+            <span class="text-accent">$</span> <span data-boot-cmd>fv init</span>
+            <span class="caret" data-boot-caret></span>
+        </p>
+        <p class="mt-4 text-ink-soft" data-boot-line>
+            initializing fv...
+        </p>
+        <ul class="mt-2">
+            {steps.map((s) => (
+                <li data-boot-line>
+                    <span class="text-accent">✓</span> {s}
+                </li>
+            ))}
+        </ul>
+        <p class="mt-4" data-boot-line>
+            ready<span class="caret"></span>
+        </p>
+    </div>
+    <button type="button" class="boot-skip" data-boot-skip>
+        skip intro <kbd>esc</kbd>
+    </button>
+</div>
+
+<style>
+    .boot {
+        display: none;
+    }
+    :global(html.boot) .boot {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: grid;
+        place-items: center;
+        background: var(--color-canvas);
+        font-family: var(--font-mono);
+        font-size: var(--text-base);
+        /* Failsafe: never trap the page if the script below doesn't run. */
+        animation: boot-failsafe 0s 6s forwards;
+    }
+    .boot-screen {
+        width: min(28rem, 100% - 2 * var(--gutter));
+    }
+    .caret {
+        display: inline-block;
+        width: 0.6em;
+        height: 1.1em;
+        margin-left: 0.15em;
+        vertical-align: text-bottom;
+        background: var(--color-accent);
+        animation: blink 1s steps(1) infinite;
+    }
+    .boot-skip {
+        position: absolute;
+        right: var(--gutter);
+        bottom: 2rem;
+        color: var(--color-ink-soft);
+        font-size: var(--text-xs);
+        cursor: pointer;
+    }
+    .boot-skip:hover {
+        color: var(--color-ink);
+    }
+    .boot-skip kbd {
+        margin-left: 0.4em;
+        padding: 0.1em 0.4em;
+        border: 1px solid var(--color-hairline);
+        border-radius: var(--radius-sm);
+    }
+    @keyframes blink {
+        50% {
+            opacity: 0;
+        }
+    }
+    @keyframes boot-failsafe {
+        to {
+            visibility: hidden;
+        }
+    }
+</style>

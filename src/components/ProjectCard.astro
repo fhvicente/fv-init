@@ -1,0 +1,56 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+    project: CollectionEntry<"projects">;
+}
+const { project } = Astro.props;
+const { title, summary, stack, cover, date, status } = project.data;
+---
+
+<a href={`/projects/${project.id}/`} class="card project-card">
+    <div class="overflow-hidden rounded-[var(--radius-sm)]">
+        <Image src={cover} alt="" widths={[480, 800]} sizes="(min-width: 768px) 50vw, 100vw" class="project-cover" />
+    </div>
+    <p class="mt-5 font-mono text-xs text-ink-soft">
+        {date.getFullYear()}
+        {status && (
+            <>
+                {" "}
+                · <span class="text-accent">{status}</span>
+            </>
+        )}
+    </p>
+    <h3 class="mt-2 text-xl">
+        {title}{" "}
+        <span class="arrow" aria-hidden="true">
+            →
+        </span>
+    </h3>
+    <p class="mt-2 text-sm text-ink-soft">{summary}</p>
+    <p class="mt-4 text-xs text-ink-soft">{stack.slice(0, 4).join(" · ")}</p>
+</a>
+
+<style>
+    .project-cover {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        transition: transform var(--d-slow) var(--ease-out);
+    }
+    .project-card:hover .project-cover,
+    .project-card:focus-visible .project-cover {
+        transform: scale(1.04);
+    }
+    .arrow {
+        display: inline-block;
+        color: var(--color-accent);
+        transition: transform var(--d-base) var(--ease-out);
+    }
+    .project-card:hover .arrow,
+    .project-card:focus-visible .arrow {
+        transform: translateX(4px);
+    }
+</style>

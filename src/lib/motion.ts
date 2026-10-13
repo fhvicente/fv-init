@@ -46,6 +46,8 @@ export function initMotion() {
         const title = document.querySelector<HTMLElement>("[data-hero-title]");
         if (title && !reduced) {
             const split = SplitText.create(title, { type: "words,chars", mask: "words" });
+            // The mask clips glyph ink that overhangs the box (negative letter-spacing on h1): widen it without moving layout.
+            gsap.set(split.masks, { paddingRight: "0.15em", marginRight: "-0.15em" });
             gsap.from(split.chars, { yPercent: 110, duration: 0.9, ease: EASE_OUT, stagger: 0.025 });
         }
 

@@ -1,61 +1,63 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
 
 interface Props {
-  projects: CollectionEntry<'projects'>[];
+    projects: CollectionEntry<"projects">[];
 }
 const { projects } = Astro.props;
 ---
 
 <section id="work" class="section" aria-labelledby="work-title">
-  <div class="wrap">
-    <p class="eyebrow" data-reveal>Selected work</p>
-    <h2 id="work-title" class="mt-4 max-w-[18ch] text-3xl" data-reveal>
-      Software that earns its place, from the database to the model.
-    </h2>
-    <ol class="mt-14 border-t border-hairline">
-      {
-        projects.map((p, i) => (
-          <li class="border-b border-hairline" data-reveal>
-            <a href={`#scene-${p.id}`} class="row">
-              <span class="text-sm text-ink-soft tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-              <span class="font-display text-xl">{p.data.title}</span>
-              <span class="hidden text-sm text-ink-soft md:block">{p.data.stack.slice(0, 3).join(' · ')}</span>
-              <Image src={p.data.cover} alt="" width={160} height={120} class="thumb" />
-            </a>
-          </li>
-        ))
-      }
-    </ol>
-  </div>
+    <div class="wrap">
+        <p class="cmd" data-reveal>
+            fv projects --featured
+        </p>
+        <h2 id="work-title" class="mt-4 max-w-[18ch] text-3xl" data-reveal>
+            Software that earns its place, from the database to the model.
+        </h2>
+        <ol class="mt-14 border-t border-hairline">
+            {projects.map((p, i) => (
+                <li class="border-b border-hairline" data-reveal>
+                    <a href={`#scene-${p.id}`} class="row">
+                        <span class="text-sm text-ink-soft tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                        <span class="font-display text-xl">{p.data.title}</span>
+                        <span class="hidden text-sm text-ink-soft md:block">
+                            {p.data.stack.slice(0, 3).join(" · ")}
+                        </span>
+                        <Image src={p.data.cover} alt="" width={160} height={120} class="thumb" />
+                    </a>
+                </li>
+            ))}
+        </ol>
+    </div>
 </section>
 
 <style>
-  .row {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr auto;
-    align-items: center;
-    gap: 1rem;
-    padding-block: 1.25rem;
-    text-decoration: none;
-    transition: color var(--d-base) var(--ease-out);
-  }
-  @media (min-width: 768px) {
     .row {
-      grid-template-columns: 3rem 1fr auto auto;
+        display: grid;
+        grid-template-columns: 2.5rem 1fr auto;
+        align-items: center;
+        gap: 1rem;
+        padding-block: 1.25rem;
+        text-decoration: none;
+        transition: color var(--d-base) var(--ease-out);
     }
-  }
-  .row:hover {
-    color: var(--color-accent);
-  }
-  .thumb {
-    width: 4.5rem;
-    height: auto;
-    border-radius: var(--radius-sm);
-    transition: transform var(--d-base) var(--ease-out);
-  }
-  .row:hover .thumb {
-    transform: scale(1.06);
-  }
+    @media (min-width: 768px) {
+        .row {
+            grid-template-columns: 3rem 1fr auto auto;
+        }
+    }
+    .row:hover {
+        color: var(--color-accent);
+    }
+    .thumb {
+        width: 4.5rem;
+        height: auto;
+        border-radius: var(--radius-sm);
+        transition: transform var(--d-base) var(--ease-out);
+    }
+    .row:hover .thumb {
+        transform: scale(1.06);
+    }
 </style>

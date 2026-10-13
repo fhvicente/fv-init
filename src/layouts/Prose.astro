@@ -1,32 +1,34 @@
 ---
-import Base from './Base.astro';
+import Base from "./Base.astro";
 
 // Works as a regular layout and as an MDX page `layout:` (props arrive in `frontmatter`).
 interface Props {
-  title: string;
-  description?: string;
-  eyebrow?: string;
-  meta?: string;
-  image?: string;
-  type?: 'website' | 'article';
-  frontmatter?: Omit<Props, 'frontmatter'>;
+    title: string;
+    description?: string;
+    eyebrow?: string;
+    /** `fv <cmd>` label shown instead of the eyebrow */
+    command?: string;
+    meta?: string;
+    image?: string;
+    type?: "website" | "article";
+    frontmatter?: Omit<Props, "frontmatter">;
 }
 const { frontmatter, ...rest } = Astro.props;
-const { title, description, eyebrow, meta, image, type } = frontmatter ?? rest;
+const { title, description, eyebrow, command, meta, image, type } = frontmatter ?? rest;
 ---
 
 <Base title={title} description={description} image={image} type={type}>
-  <article class="wrap pt-36 pb-[var(--section)]">
-    <header class="max-w-[65ch]">
-      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-      <h1 class="mt-4 text-3xl">{title}</h1>
-      {description && <p class="mt-5 text-lg text-ink-soft">{description}</p>}
-      {meta && <p class="mt-4 text-sm text-ink-soft">{meta}</p>}
-    </header>
-    <slot name="before" />
-    <div class="prose mt-12">
-      <slot />
-    </div>
-    <slot name="after" />
-  </article>
+    <article class="wrap pt-36 pb-[var(--section)]">
+        <header class="max-w-[65ch]">
+            {command ? <p class="cmd">{command}</p> : eyebrow && <p class="eyebrow">{eyebrow}</p>}
+            <h1 class="mt-4 text-3xl">{title}</h1>
+            {description && <p class="mt-5 text-lg text-ink-soft">{description}</p>}
+            {meta && <p class="mt-4 text-sm text-ink-soft">{meta}</p>}
+        </header>
+        <slot name="before" />
+        <div class="prose mt-12">
+            <slot />
+        </div>
+        <slot name="after" />
+    </article>
 </Base>

@@ -7,8 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-    // ponytail: placeholder until the domain is decided (PRD open question)
-    site: "https://example.com",
+    site: "https://fvinit.me",
     integrations: [mdx(), sitemap()],
     markdown: {
         shikiConfig: { theme: "vitesse-dark" },

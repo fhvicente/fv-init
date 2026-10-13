@@ -15,6 +15,9 @@ const projects = defineCollection({
             links: z.object({ live: z.url().optional(), repo: z.url().optional() }).default({}),
             featured: z.boolean().default(false),
             order: z.number().default(99),
+            status: z.enum(["live", "in progress", "archived"]).optional(),
+            // Products go to /projects, experiments to /lab (PRD §6.3).
+            kind: z.enum(["product", "experiment"]).default("product"),
         }),
 });
 

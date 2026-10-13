@@ -5,8 +5,8 @@ export const getPosts = async () =>
         (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
     );
 
-export const getProjects = async () =>
-    (await getCollection("projects")).sort(
+export const getProjects = async (kind?: "product" | "experiment") =>
+    (await getCollection("projects", ({ data }) => !kind || data.kind === kind)).sort(
         (a, b) => a.data.order - b.data.order || b.data.date.valueOf() - a.data.date.valueOf(),
     );
 
